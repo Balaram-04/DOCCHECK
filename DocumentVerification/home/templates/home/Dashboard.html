@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        /* Reset styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f5f5f5, #e8f5e9); /* Light gray to greenish */
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #2e7d32; /* Rich green */
+            color: #fff;
+            padding: 1rem 2rem;
+            width: 100%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+        }
+
+        .header .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            letter-spacing: 0.05em;
+        }
+
+        .header .hamburger {
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .header .profile-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .header .profile-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+        }
+
+        .header .dropdown {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            display: none;
+            flex-direction: column;
+            z-index: 20;
+        }
+
+        .header .dropdown.active {
+            display: flex;
+        }
+
+        .header .dropdown a {
+            padding: 0.8rem 1.2rem;
+            text-decoration: none;
+            color: #333;
+            font-size: 1rem;
+            transition: background 0.3s ease;
+        }
+
+        .header .dropdown a:hover {
+            background: #f0f0f0;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -250px;
+            width: 250px;
+            height: 100%;
+            background: #333;
+            color: #fff;
+            transition: left 0.3s ease;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.4);
+            z-index: 9;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 1.5rem;
+        }
+
+        .sidebar ul li {
+            margin: 1.2rem 0;
+        }
+
+        .sidebar ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        }
+
+        .sidebar ul li a:hover {
+            color: #ffcc80; /* Soft orange */
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            justify-content: center;
+            margin: 3rem auto;
+            width: 90%;
+            max-width: 1000px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+
+        /* Feature */
+        .feature {
+            background: linear-gradient(135deg, #a5d6a7, #81c784); /* Gradient green */
+            padding: 0.5rem;
+            width: 250px;
+            height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 12px;
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 18px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature h2 {
+            color: #1b5e20; /* Dark green */
+            margin-bottom: 0.5rem;
+        }
+
+        .feature p {
+            font-size: 1rem;
+            color: #333;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: auto;
+            padding: 1rem;
+            text-align: center;
+            background: #2e7d32;
+            color: #fff;
+            width: 100%;
+            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Menu -->
+    <nav id="sidebar" class="sidebar">
+        <ul>
+            <li><a href="#upload">Upload</a></li>
+            <li><a href="#store">Store</a></li>
+            <li><a href="#share">Share</a></li>
+            
+        </ul>
+    </nav>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="hamburger" onclick="toggleMenu()">&#9776;</div>
+        <h1 class="logo">Enhanced Dashboard</h1>
+        <div class="profile-container" onclick="toggleDropdown()">
+            <img 
+                src="https://static.vecteezy.com/system/resources/previews/005/544/718/non_2x/profile-icon-design-free-vector.jpg" 
+                alt="Profile Icon" 
+                class="profile-icon">
+            <div class="dropdown" id="dropdown-menu">
+                <a href="{% url 'profile' %}">Profile</a>
+                <a href="{% url 'edit_profile' %}">Edit Profile</a>
+                <a href="{% url 'logout' %}">Logout</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <section id="upload" class="feature">
+            <h2>Upload</h2>
+            <p>Upload your documents securely.</p>
+        </section>
+        <section id="store" class="feature">
+            <h2>Store</h2>
+            <p>Store your files with easy access.</p>
+        </section>
+        <section id="share" class="feature">
+            <h2>Share</h2>
+            <p>Share your files with easy access.</p>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2024 Prideful Dashboard. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Toggle Sidebar
+        function toggleMenu() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        // Toggle Dropdown
+        function toggleDropdown() {
+            const dropdown = document.getElementById('dropdown-menu');
+            dropdown.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

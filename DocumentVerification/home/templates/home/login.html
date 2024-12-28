@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login with OTP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            max-width: 900px;
+        }
+        .form-container {
+            background: #fff;
+            padding: 40px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        p {
+            text-align: center;
+            font-size: 14px;
+        }
+        a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        ul li {
+            color: red;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Login Form -->
+        <div class="form-container login-container">
+            <h2>Login with OTP</h2>
+            <form method="POST" action="{% url 'login' %}">
+                {% csrf_token %}
+                
+                <!-- Step 1: Email Input -->
+                <input 
+                    type="email" 
+                    name="email" 
+                    placeholder="Enter your email" 
+                    value="{{ email|default:'' }}" 
+                    {% if otp_sent %}readonly{% endif %} 
+                    required
+                >
+                
+                <!-- Step 2: OTP Input -->
+                {% if otp_sent %}
+                <input 
+                    type="text" 
+                    name="otp" 
+                    placeholder="Enter OTP" 
+                    required
+                >
+                {% endif %}
+                
+                <!-- Dynamic Submit Button -->
+                <button type="submit">
+                    {% if otp_sent %}
+                        Verify OTP
+                    {% else %}
+                        Send OTP
+                    {% endif %}
+                </button>
+            </form>
+            
+            <!-- Display Messages -->
+            {% if messages %}
+            <ul>
+                {% for message in messages %}
+                <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            
+            <p>Don't have an account? <a href="{% url 'signup' %}">Sign Up</a></p>
+            <p><a href="{% url 'forget_password' %}">Forget Password</a></p>
+        </div>
+    </div>
+</body>
+</html>
